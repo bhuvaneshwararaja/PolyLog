@@ -18,10 +18,13 @@ function activate(context) {
                 const line = editor.document.lineAt(lineNumber);
                 const currentLineText = editor.document.lineAt(editor.selection.active.line).text;
 
-                if (currentLineText.includes(`${selectedText} =`) || currentLineText.includes(`${selectedText}=`)) {
+                if (currentLineText.includes(`${selectedText} =`) ||
+                    currentLineText.includes(`${selectedText}=`)  ||
+                    currentLineText.includes(`${selectedText}:`)
+                ) {
                     let log;
 
-                    if (userLanguage === "JavaScript") {
+                    if (userLanguage === "JavaScript" || userLanguage === "TypeScript") {
                         log = await buildLogStatement(userLanguage, selectedText);
                     } else if (userLanguage === 'Php') {
                         log = await buildLogStatement(userLanguage, selectedText, lineNumber);
@@ -93,7 +96,8 @@ const readFileLineByLine = async (lineForFile = "Php") => {
 const buildLogStatement = async (language, logVariable, lineNumber = 0) => {
     const uniqueId = Date.now();
     switch (language) {
-        case "JavaScript": {
+        case "JavaScript":
+        case "TypeScript": {
             const selectLogLevel = await vscode.window.showQuickPick(
                 ["Log", "Warning", "Error"], {
                     placeHolder: 'Select a log level',
@@ -141,7 +145,7 @@ const getDefaultLanguage = () => {
 
     if (editor) {
         const fileExtension = editor.document.fileName.split('.').pop().toLowerCase();
-        return fileExtension === "js" ? "JavaScript" : fileExtension === "php" ? "Php" : fileExtension === "html" ? "html" : null;
+        return fileExtension === "js" ? "JavaScript" : fileExtension === "php" ? "Php" : fileExtension === "html" ? "html" : fileExtension === "ts" ? "TypeScript" : null;
     } else {
         vscode.window.showInformationMessage('No active editor found');
         return null;
