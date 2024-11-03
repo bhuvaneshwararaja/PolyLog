@@ -1,6 +1,6 @@
 {
-  "name": "console",
-  "displayName": "console-logger",
+  "name": "polylog",
+  "displayName": "polylog",
   "description": "console-logger helps to log different information in pretty formate in console",
   "version": "0.0.1",
   "engines": {
