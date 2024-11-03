@@ -14,7 +14,7 @@
   "contributes": {
     "commands": [{
       "command": "console.log",
-      "title": "Add log"
+      "title": "polylog: Add log"
     },
     {
         "command": "console.selectLanguage",

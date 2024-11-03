@@ -1,65 +1,71 @@
-# console README
+# PolyLog
 
-This is the README for your extension "console". After writing up a brief description, we recommend including the following sections.
+**PolyLog** is a VS Code extension that automatically detects the programming language and inserts the appropriate log statement for selected variables. Whether you’re working in JavaScript, TypeScript, PHP, or a mix within HTML, PolyLog simplifies debugging by adding language-specific log statements with a single click.
+
+![PolyLog Demo](assets/ezgif-1-d4bf95055f.gif)
 
 ## Features
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+- **Automatic Language Detection**: Detects the file type based on its extension and determines the appropriate log statement for the language.
+- **Flexible Log Placement**: Works seamlessly within `<script>` tags in HTML and PHP files, inserting JavaScript log statements inside embedded scripts.
+- **Language-Specific Logging**: Automatically adds:
+  - `console.error` statements for JavaScript and TypeScript files, with custom styling for enhanced readability.
+  - `echo` statements for PHP files.
 
-For example if there is an image subfolder under your extension project workspace:
+## Supported Languages
 
-\!\[feature X\]\(images/feature-x.png\)
+- JavaScript
+- TypeScript
+- PHP
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+## Usage
 
-## Requirements
+1. **Select a Variable**: Highlight the variable you wish to log in your code. PolyLog will detect the variable and add a log statement for it only.
+2. **Insert Log Statement**: Use the command palette or keyboard shortcut to insert the log statement:
+   - Open the Command Palette with `Cmd+Shift+P` (Mac) or `Ctrl+Shift+P` (Windows) and select **PolyLog: Add Log**.
+   - Alternatively, use `Cmd+Shift+A` (Mac) or `Ctrl+Shift+A` (Windows) for a quick shortcut to add the log.
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+### Examples
 
-## Extension Settings
+1. **In a JavaScript or TypeScript file**:
+   - Select a variable (e.g., `logStr`), and PolyLog will insert:
+     ```javascript
+     console.error('%c[Log #1730658846430] logStr:', 'color: red; font-weight: bold;', logStr);
+     ```
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
+2. **In a PHP file**:
+   - Select a variable (e.g., `$aarrrr`), and PolyLog will insert:
+     ```php
+     echo '[Log #1730657218477] $aarrrr: ', $aarrrr;
+     ```
 
-For example:
+3. **Within `<script>` tags in HTML or PHP files**:
+   - When working in mixed environments like HTML or PHP files, PolyLog will insert JavaScript’s `console.error` for variables within `<script>` tags.
 
-This extension contributes the following settings:
+## Installation
 
-* `myExtension.enable`: Enable/disable this extension.
-* `myExtension.thing`: Set to `blah` to do something.
+1. Download and install the PolyLog extension from the VS Code Marketplace.
+2. Reload your VS Code editor to activate the extension.
+
+## Configuration
+
+No additional configuration is required. PolyLog automatically detects the language and file type, so you can start logging variables immediately!
 
 ## Known Issues
 
-Calling out known issues can help limit users opening duplicate issues against your extension.
+- Currently, PolyLog supports only JavaScript, TypeScript, and PHP. Support for additional languages will be added in future updates.
+- Nested language detection (e.g., script blocks within complex template engines) may have limited support.
 
-## Release Notes
+## Contributing
 
-Users appreciate release notes as you update your extension.
+Contributions are welcome! If you'd like to help expand PolyLog, please fork the repository and submit a pull request.
 
-### 1.0.0
+1. Fork the project
+2. Create your feature branch (`git checkout -b feature/YourFeature`)
+3. Commit your changes (`git commit -m 'Add YourFeature'`)
+4. Push to the branch (`git push origin feature/YourFeature`)
+5. Open a pull request
 
-Initial release of ...
+## License
 
-### 1.0.1
-
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
-
----
-
-## Working with Markdown
-
-You can author your README using Visual Studio Code.  Here are some useful editor keyboard shortcuts:
-
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux)
-* Toggle preview (`Shift+Cmd+V` on macOS or `Shift+Ctrl+V` on Windows and Linux)
-* Press `Ctrl+Space` (Windows, Linux, macOS) to see a list of Markdown snippets
-
-## For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
