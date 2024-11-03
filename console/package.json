@@ -1,0 +1,53 @@
+{
+  "name": "console",
+  "displayName": "console-logger",
+  "description": "console-logger helps to log different information in pretty formate in console",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.95.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [],
+  "main": "./extension.js",
+  "contributes": {
+    "commands": [{
+      "command": "console.log",
+      "title": "Add log"
+    },
+    {
+        "command": "console.selectLanguage",
+        "title": "Select language"
+      }
+],
+    "keybindings": [
+        {
+            "command": "console.log",
+            "key": "cmd+shift+a",
+            "mac": "cmd+shift+a",
+            "when": "editorHasSelection"
+          },
+          {
+            "command": "console.log",
+            "key": "ctrl+shift+a",
+            "win": "ctrl+shift+a",
+            "linux": "ctrl+shift+a",
+            "when": "editorHasSelection"
+          }
+      ]
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "pretest": "npm run lint",
+    "test": "vscode-test"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.95.0",
+    "@types/mocha": "^10.0.9",
+    "@types/node": "20.x",
+    "eslint": "^9.13.0",
+    "@vscode/test-cli": "^0.0.10",
+    "@vscode/test-electron": "^2.4.1"
+  }
+}
