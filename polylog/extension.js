@@ -17,13 +17,11 @@ function activate(context) {
 
             const line = editor.document.lineAt(lineNumber);
             const startCharacterPosition = line.firstNonWhitespaceCharacterIndex;
-            console.log(startCharacterPosition);
 
             if (selectedText) {
                 const lineNumber = editor.selection.active.line + 1;
                 await editor.edit(editBuilder => {
                     if (lineNumber >= editor.document.lineCount) {
-                        // Insert a new line at the end of the last line
                         editBuilder.insert(editor.document.lineAt(lineNumber - 1).range.end, '\n');
                     }
                 })
@@ -32,6 +30,8 @@ function activate(context) {
                 
                 if (currentLineText.includes(`${selectedText} =`) ||
                     currentLineText.includes(`${selectedText}=`)  ||
+                    currentLineText.includes(`${selectedText}:`) ||
+                    currentLineText.includes(`${selectedText} :=`)
                     currentLineText.includes(`${selectedText}:`) ||
                     currentLineText.includes(`${selectedText} :=`)
                 ) {
@@ -240,9 +240,18 @@ const getDefaultLanguage = () => {
 
     if (editor) {
         const fileExtension = editor.document.fileName.split('.').pop().toLowerCase();
-        return fileExtension === "js" ? "JavaScript" : fileExtension === "php" ? "Php" : fileExtension === "html" ? "html" : 
-            fileExtension === "ts" ? "TypeScript" : fileExtension === "py" ? "Python" : fileExtension === "java" ? "Java" :
-            fileExtension === 'go' ? 'Golang' : fileExtension === 'dart' ? 'Dart' : null;
+        const languageMap = {
+            js: "JavaScript",
+            php: "Php",
+            html: "html",
+            ts: "TypeScript",
+            py: "Python",
+            java: "Java",
+            go: "Golang",
+            dart: "Dart"
+        };
+
+        return languageMap[fileExtension] || null;
     } else {
         vscode.window.showInformationMessage('No active editor found');
         return null;
