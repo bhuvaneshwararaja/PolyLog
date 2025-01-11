@@ -1,6 +1,6 @@
 # PolyLog
 
-**PolyLog** is a VS Code extension that automatically detects the programming language and inserts the appropriate log statement for selected variables. Whether you’re working in JavaScript, TypeScript, PHP, or a mix within HTML, PolyLog simplifies debugging by adding language-specific log statements with a single click.
+**PolyLog** is a VS Code extension that automatically detects the programming language and inserts the appropriate log statement for selected variables. Whether you’re working in Golang, Python, Java, Dart, JavaScript, TypeScript, PHP, or a mix within HTML, PolyLog simplifies debugging by adding language-specific log statements with a single click.
 
 ![PolyLog Demo](assets/ezgif-1-d4bf95055f.gif)
 
@@ -9,14 +9,23 @@
 - **Automatic Language Detection**: Detects the file type based on its extension and determines the appropriate log statement for the language.
 - **Flexible Log Placement**: Works seamlessly within `<script>` tags in HTML and PHP files, inserting JavaScript log statements inside embedded scripts.
 - **Language-Specific Logging**: Automatically adds:
-  - `console.error` statements for JavaScript and TypeScript files, with custom styling for enhanced readability.
+  - `console.(log|warn|error)` statements for JavaScript and TypeScript files, with custom styling for enhanced readability.
   - `echo` statements for PHP files.
+  - `print` statements for Dart files.
+  - `fmt.Printf` statements for Golang files.
+  - `System.(out|err).println` statements for Java files.
+  - `print` statements for Python files.
 
 ## Supported Languages
 
 - JavaScript
 - TypeScript
 - PHP
+- HTML
+- Golang 
+- Python
+- Java
+- Dart
 
 ## Usage
 
@@ -39,7 +48,31 @@
      echo '[Log #1730657218477] $aarrrr: ', $aarrrr;
      ```
 
-3. **Within `<script>` tags in HTML or PHP files**:
+3. **In a Golang file**:
+   - Select a variable (e.g., `radius`), and PolyLog will insert:
+     ```golang
+     fmt.Printf("\033[91m[Log #1733855811219] radius: %v\033[0m\n", radius)
+     ```
+
+4. **In a Python file**:
+   - Select a variable (e.g., `log`), and PolyLog will insert:
+     ```py
+     print(f"\033[92m[Log #1733855598485] log: {log}{'\033[0m'}")
+     ```
+
+5. **In a Java file**:
+   - Select a variable (e.g., `name`), and PolyLog will insert:
+     ```java
+     System.out.println("\033[97m[Log #1733855876107] name: " + name + "\033[0m");
+     ```
+
+6. **In a Dart file**:
+   - Select a variable (e.g., `hello`), and PolyLog will insert:
+     ```dart
+     print("\x1B[91m[Log #1733857153455] hello: $hello\x1B[0m");
+     ```
+
+7. **Within `<script>` tags in HTML or PHP files**:
    - When working in mixed environments like HTML or PHP files, PolyLog will insert JavaScript’s `console.error` for variables within `<script>` tags.
 
 ## Installation
@@ -53,7 +86,7 @@ No additional configuration is required. PolyLog automatically detects the langu
 
 ## Known Issues
 
-- Currently, PolyLog supports only JavaScript, TypeScript, and PHP. Support for additional languages will be added in future updates.
+- Currently, PolyLog supports only Golang, Python, Java, Dart, JavaScript, TypeScript, and PHP. Support for additional languages will be added in future updates.
 - Nested language detection (e.g., script blocks within complex template engines) may have limited support.
 
 ## Contributing
