@@ -13,14 +13,27 @@ function activate(context) {
 
         if (editor) {
             const selectedText = editor.document.getText(editor.selection);
+            const lineNumber = editor.selection.start.line;
+
+            const line = editor.document.lineAt(lineNumber);
+            const startCharacterPosition = line.firstNonWhitespaceCharacterIndex;
+
             if (selectedText) {
                 const lineNumber = editor.selection.active.line + 1;
+                await editor.edit(editBuilder => {
+                    if (lineNumber >= editor.document.lineCount) {
+                        editBuilder.insert(editor.document.lineAt(lineNumber - 1).range.end, '\n');
+                    }
+                })
                 const line = editor.document.lineAt(lineNumber);
                 const currentLineText = editor.document.lineAt(editor.selection.active.line).text;
-
+                
                 if (currentLineText.includes(`${selectedText} =`) ||
                     currentLineText.includes(`${selectedText}=`)  ||
-                    currentLineText.includes(`${selectedText}:`)
+                    currentLineText.includes(`${selectedText}:`) ||
+                    currentLineText.includes(`${selectedText} :=`)
+                    currentLineText.includes(`${selectedText}:`) ||
+                    currentLineText.includes(`${selectedText} :=`)
                 ) {
                     let log;
 
@@ -30,12 +43,22 @@ function activate(context) {
                         log = await buildLogStatement(userLanguage, selectedText, lineNumber);
                     } else if (userLanguage === 'html') {
                         log = await buildLogStatement(userLanguage, selectedText, lineNumber);
+                    } else if (userLanguage === 'Python') {
+                        log = await buildLogStatement(userLanguage, selectedText);
+                    } else if (userLanguage === 'Java') {
+                        log = await buildLogStatement(userLanguage, selectedText);
+                    } else if (userLanguage === 'Golang') {
+                        log = await buildLogStatement(userLanguage, selectedText);
+                    } else if (userLanguage === 'Dart') {
+                        log = await buildLogStatement(userLanguage, selectedText);
                     } else {
                         return vscode.window.showInformationMessage('Language not supported right now!!');
                     }
                     if(log){
+                        let intendation = " ".repeat(startCharacterPosition);
+                        
                         editor.edit(editBuilder => {
-                            editBuilder.insert(line.range.start, `\n${log}`);
+                            editBuilder.insert(line.range.start, `\n${intendation}${log}`);
                         });
                     }
                     else{
@@ -124,10 +147,82 @@ const buildLogStatement = async (language, logVariable, lineNumber = 0) => {
 
             return;
         }
+        case "Python":{
+            const selectLogLevel = await vscode.window.showQuickPick(
+                ["Log", "Warning", "Error"], {
+                    placeHolder: 'Select a log level',
+                    canPickMany: false
+                }
+            ) || "Log";
+
+            const pythonLogColor = getXLogColor(selectLogLevel);
+            
+            return `print(f"${pythonLogColor}[Log #${uniqueId}] ${logVariable}: {${logVariable}}{'\\033[0m'}")\n`;
+        }
+        case "Java":{
+            const selectLogLevel = await vscode.window.showQuickPick(
+                ["Log", "Warning", "Error"], {
+                    placeHolder: 'Select a log level',
+                    canPickMany: false
+                }
+            ) || "Log";
+
+            const logLevelMap = {
+                "Log": "System.out.println",
+                "Warning": "System.err.println",
+                "Error": "System.err.println"
+            };
+
+            const javaLogColor = getXLogColor(selectLogLevel);
+
+            return `${logLevelMap[selectLogLevel]}("${javaLogColor}[Log #${uniqueId}] ${logVariable}: " + ${logVariable} + "\\033[0m");\n`;
+        }
+        case 'Golang': {
+            const selectLogLevel = await vscode.window.showQuickPick(
+                ["Log", "Warning", "Error"], {
+                    placeHolder: 'Select a log level',
+                    canPickMany: false
+                }
+            ) || "Log";
+
+            const goLogColor = getXLogColor(selectLogLevel);
+
+            return `fmt.Printf("${goLogColor}[Log #${uniqueId}] ${logVariable}: %v\\033[0m\\n", ${logVariable});\n`;
+        }
+        case 'Dart': {
+            const selectLogLevel = await vscode.window.showQuickPick(
+                ["Log", "Warning", "Error"], {
+                    placeHolder: 'Select a log level',
+                    canPickMany: false
+                }
+            ) || "Log";
+
+            const dartLogColor = getDartLogColor(selectLogLevel);
+            
+            return `print("${dartLogColor}[Log #${uniqueId}] ${logVariable}: $${logVariable}\\x1B[0m");\n`;
+        }
         default:
             return `console.log('');`;
     }
 };
+
+const getXLogColor = (logLevel) => {
+    const Colors = {
+        "Warning": '\\033[93m', // Yellow
+        "Error": '\\033[91m',   // Red
+        "Log": '\\033[97m',     // Green
+    };
+    return Colors[logLevel] || Colors.LOG;
+}
+
+const getDartLogColor = (logLevel) => {
+    const Colors = {
+        "Warning": '\\x1B[93m', // Yellow
+        "Error": '\\x1B[91m',   // Red
+        "Log": '\\x1B[97m',     // Green
+    };
+    return Colors[logLevel] || Colors.LOG;
+}
 
 const getLogColor = (logLevel) => {
     switch (logLevel) {
@@ -145,7 +240,18 @@ const getDefaultLanguage = () => {
 
     if (editor) {
         const fileExtension = editor.document.fileName.split('.').pop().toLowerCase();
-        return fileExtension === "js" ? "JavaScript" : fileExtension === "php" ? "Php" : fileExtension === "html" ? "html" : fileExtension === "ts" ? "TypeScript" : null;
+        const languageMap = {
+            js: "JavaScript",
+            php: "Php",
+            html: "html",
+            ts: "TypeScript",
+            py: "Python",
+            java: "Java",
+            go: "Golang",
+            dart: "Dart"
+        };
+
+        return languageMap[fileExtension] || null;
     } else {
         vscode.window.showInformationMessage('No active editor found');
         return null;
