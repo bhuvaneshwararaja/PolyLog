@@ -31,7 +31,7 @@ function activate(context) {
                 if (currentLineText.includes(`${selectedText} =`) ||
                     currentLineText.includes(`${selectedText}=`)  ||
                     currentLineText.includes(`${selectedText}:`) ||
-                    currentLineText.includes(`${selectedText} :=`)
+                    currentLineText.includes(`${selectedText} :=`) ||
                     currentLineText.includes(`${selectedText}:`) ||
                     currentLineText.includes(`${selectedText} :=`)
                 ) {
